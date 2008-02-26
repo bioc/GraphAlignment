@@ -1,0 +1,6 @@
+export(LinearAssignment, ComputeM, AlignNetworks, CreateScoreMatrix, 
+    InvertPermutation, Permute, Trace, InitialAlignment, GetBinNumber, 
+	VectorToBin, MatrixToBin, ComputeScores, GenerateExample, 
+	ComputeLinkParameters, ComputeNodeParameters, EncodeDirectedGraph, 
+	AnalyzeAlignment, AlignedPairs, .Last.lib)
+useDynLib(GraphAlignment)

@@ -1,0 +1,17 @@
+Authors: Joern P. Meier, Michal Kolar, Ville Mustonen, Michael Laessig, and 
+  Johannes Berg
+
+The GraphAlignment package can be used freely for non-commercial purposes. If 
+you use this package, the appropriate paper to cite is J. Berg and M. Laessig, 
+"Cross-species analysis of biological networks by Bayesian alignment", PNAS 103 
+(29), 10967-10972 (2006)
+
+This software is made available in the hope that it will be useful, but WITHOUT 
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+FOR A PARTICULAR PURPOSE.
+
+This software contains code for solving linear assignment problems which was 
+written by Roy Jonker, MagicLogic Optimization Inc.. Please note that this code 
+is copyrighted, (c) 2003 MagicLogic Systems Inc., Canada and may be used for 
+non-commercial purposes only. See http://www.magiclogic.com/assignment.html for 
+the latest version of the LAP code and details on licensing.
