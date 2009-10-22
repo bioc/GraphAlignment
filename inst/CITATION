@@ -1,9 +1,12 @@
 citHeader("If you use this package, the appropriate paper to cite is:")
-
-citEntry(entry="Paper", 
+citEntry(entry="article", 
   title = "Cross-species analysis of biological networks by Bayesian alignment", 
   author = personList(as.person("J. Berg"), as.person("M. Laessig")), 
-  note = "PNAS 103 (29), 10967-10972 (2006)",
+  journal = "PNAS",
+  year = 2006,
+  volume = 103, 
+  number =29,
+  pages = 10967-10972, 
   textVersion = paste("J. Berg and M. Laessig", 
     dQuote("Cross-species analysis of biological networks by Bayesian alignment"), 
 	"PNAS 103 (29), 10967-10972 (2006)")
