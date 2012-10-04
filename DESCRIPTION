@@ -1,6 +1,6 @@
 Package: GraphAlignment
-Version: 1.21.0
-Date: 2012-04-27
+Version: 1.22.0
+Date: 2012-10-04
 Title: GraphAlignment
 Author: Joern P. Meier <mail@ionflux.org>, Michal Kolar, Ville Mustonen, Michael Laessig, and Johannes Berg.
 Maintainer: Joern P. Meier <mail@ionflux.org>

@@ -69,7 +69,7 @@ GAMatrixInt* GA_matrix_from_R_int(SEXP robj)
     int j;
     for (i = 0; i < dims[0]; i++)
         for (j = 0; j < dims[1]; j++)
-            matrix->elts[i][j] = inputRaw[j * dims[1] + i];
+            matrix->elts[i][j] = inputRaw[j * dims[0] + i];
     UNPROTECT(1);
     return matrix;
 }
@@ -124,7 +124,7 @@ GAMatrixReal* GA_matrix_from_R_real(SEXP robj)
     int j;
     for (i = 0; i < dims[0]; i++)
         for (j = 0; j < dims[1]; j++)
-            matrix->elts[i][j] = inputRaw[j * dims[1] + i];
+            matrix->elts[i][j] = inputRaw[j * dims[0] + i];
     UNPROTECT(1);
     return matrix;
 }
