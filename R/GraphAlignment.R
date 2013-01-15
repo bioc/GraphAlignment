@@ -98,7 +98,6 @@ AlignNetworks <- function (A, B, R, P, linkScore, selfLinkScore, nodeScore1,
       bCur <- bCur + bStep
     } else
       P <- LinearAssignment(round(-1000 * (M/max(abs(M)))))
-    PM <- M[P, ]
   }
   return(P)
 }
@@ -323,45 +322,70 @@ ComputeScores <- function(A, B, R, P, linkScore, selfLinkScore, nodeScore1,
   list(sl=tsl, sn=tsn)
 }
 
-GenerateExample <- function(dimA, dimB, filling, covariance, 
-  symmetric=FALSE, numOrths=0, correlated=NA)
+GenerateExample <- function(dimA, dimB, filling, covariance, symmetric = FALSE,
+                            numOrths = 0, correlated = NA, distribution = "normal") 
 {
-    if(is.na(correlated[1]))
-        correlated <- 1:min(dimA, dimB);
-
-    x=matrix(rnorm(dimA * dimA), dimA, dimA);
-    y=matrix(rnorm(dimB * dimB), dimB, dimB);
-
+  
+  if (is.na(correlated[1]))
+    correlated <- 1:min(dimA, dimB);
+  
+  if (distribution == "uniform") {
+    ##-- http://comisef.wikidot.com/tutorial:correlateduniformvariates
+    x <- matrix(runif(dimA * dimA), dimA, dimA);
+    y <- matrix(runif(dimB * dimB), dimB, dimB);
     ta <- x;
     tb <- y;
+    
+    tab <- matrix(rnorm(2 * length(correlated) ^ 2), length(correlated), 2 * length(correlated));
+    cov1 <- cov2 <- matrix(0, length(correlated), length(correlated));
+    diag(cov1) <- 1;
+    diag(cov2) <- 2 * sin(pi * covariance / 6);
+    cov <- rbind(cbind(cov1, cov2), cbind(cov2, cov1));
+    tabUni <- pnorm(tab %*% chol(cov));
+    
+    ta[correlated, correlated] <- tabUni[, 1:length(correlated)];
+    tb[correlated, correlated] <- tabUni[, (length(correlated) + 1):(2 * length(correlated))];
+    
+  } else if (distribution == "normal") {
+    x <- matrix(rnorm(dimA * dimA), dimA, dimA);
+    y <- matrix(rnorm(dimB * dimB), dimB, dimB);
+    ta <- x;
+    tb <- y;
+    
     ta[correlated,correlated] <- (sqrt(1 + covariance) 
-        * x[correlated,correlated] + sqrt(1 - covariance) 
-        * y[correlated,correlated])/sqrt(2);
+                                  * x[correlated,correlated] + sqrt(1 - covariance) 
+                                  * y[correlated,correlated])/sqrt(2);
     tb[correlated,correlated] <- (sqrt(1 + covariance) 
-        * x[correlated,correlated] - sqrt(1 - covariance) 
-        * y[correlated,correlated])/sqrt(2);
-
-    maskA=matrix(runif(dimA * dimA), dimA, dimA);
-    maskB=matrix(runif(dimA * dimA), dimA, dimA);
-    maskB[correlated, correlated] <- maskA[correlated, correlated];
-    ta[maskA > filling] <- 0;
-    tb[maskB > filling] <- 0;
-
-    #enforce symmetry
-    if (symmetric) {
-        ta[lower.tri(ta)] <- t(ta)[lower.tri(t(ta))]
-        tb[lower.tri(tb)] <- t(tb)[lower.tri(t(tb))]
-    }
-
-    tr <- matrix(0, dimA, dimB)
-    if (numOrths > 0)
-    {
-        if ((numOrths <= dimA) && (numOrths <= dimB))
-            diag(tr)[1:numOrths] <- 1
-        else
-            diag(tr) <- 1
-    }
-    list(a=ta, b=tb, r=tr)
+                                  * x[correlated,correlated] - sqrt(1 - covariance) 
+                                  * y[correlated,correlated])/sqrt(2);
+    
+  } else {
+    stop(paste("Distribution '", distribution, "' is not a supported edge weight distribution.\n",
+               "Use 'normal' or 'uniform' distribution instead.\n", sep = ""));
+  }
+  
+  ##-- filling
+  maskA <- matrix(runif(dimA * dimA), dimA, dimA);
+  maskB <- matrix(runif(dimB * dimB), dimB, dimB);
+  maskB[correlated, correlated] <- maskA[correlated, correlated];
+  ta[maskA > filling] <- 0;
+  tb[maskB > filling] <- 0;
+  
+  ##-- enforce symmetry
+  if (symmetric) {
+    ta[lower.tri(ta)] <- t(ta)[lower.tri(t(ta))]
+    tb[lower.tri(tb)] <- t(tb)[lower.tri(t(tb))]
+  }
+  
+  tr <- matrix(0, dimA, dimB)
+  if (numOrths > 0) {
+    if ((numOrths <= dimA) && (numOrths <= dimB))
+      diag(tr)[1:numOrths] <- 1
+    else
+      diag(tr) <- 1
+  }
+  
+  list(a = ta, b = tb, r = tr)
 }
 
 ComputeLinkParameters <- function(A, B, P, lookupLink, clamp=TRUE)
